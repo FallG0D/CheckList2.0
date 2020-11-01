@@ -3,21 +3,35 @@
 #chekbutton - Класс для создания кнопок-флагов
 #BooleanVar - класс координирующий значения флагов
 #onvalue, offvalue - включение кнопок
+#Frame - позволяет разбить root
+#master - присваивает территорию объекту
+#get - функция вытягивающая значение объектов из tkinter
+#subset - сравнивает объект в столбцах
+#list - редоктируемый список(remove-удаление объекта, если знаем название, clear - чистить весь list)
+#tuple - защита от изменений
 
-
+'''Начало программы'''
 # Импорт модулей
 from tkinter import *
-
+import pandas as pd
 root = Tk()
 
 def collect_data():
     """Собирает, обрабатывает и сохраняет дату в базу данных"""
     data = {}
-    
+
+    name = ent_name.get()
+    print(name)
+    data['ФИО'] = name
+
+    age = ent_bdate.get()
+    print(age)
+    data['Дата рождения'] = age #Записываем в словарь
     print(data)
-    
-    
-    
+
+    global df
+    df = df.append(other=data, ignore_index=True)
+    df = df.drop_duplicates(subset=columns[:-2], keep='last')
     
 # Функция для текста
 def open_text():
@@ -62,6 +76,13 @@ def open_buttons():
     but_data.pack(side=RIGHT,padx=10)
     but_close.pack(side=RIGHT, padx=10, pady=10)
 
+#Проектируем базу Данных
+columns = 'ФИО','Дата рождения', 'Возраст', 'пол', 'интересы', 'Дата регистрации'
+df = pd.DataFrame(columns=columns)
+
+
+
+
 
 radio_frame = Frame(master=root)
 
@@ -91,14 +112,14 @@ interest_frame = Frame(master=root)
 interest_lbl = Label(master=interest_frame, text='Выберите интересы:')
 interest_names = "Наука","Техника","Искусство", "Спорт", "Путешествие","Другое"
 
-#Создание лагов
+#Создание флагов
 flag_sc, bool_sc = create_flag(name=interest_names[0])
 flag_tech, bool_tech = create_flag(name=interest_names[1])
 flag_art, bool_art = create_flag(name=interest_names[2])
 flag_tr, bool_tr = create_flag(name=interest_names[3])
 flag_sp, bool_sp = create_flag(name=interest_names[4])
 flag_an, bool_an = create_flag(name=interest_names[5])
-#писок флагов и их булево значение
+#Список флагов и их булево значение
 flags = flag_sc, flag_tech, flag_art, flag_tr, flag_sp, flag_an
 booleans_interest = bool_sc, bool_tech, bool_art, bool_tr, bool_sp, bool_an
 
@@ -106,8 +127,8 @@ booleans_interest = bool_sc, bool_tech, bool_art, bool_tr, bool_sp, bool_an
 but_frame = Frame(master=root)
 
 #Кнопки действий
-but_data = Button(master=but_frame, text='ЖМЯК', width=10, command=collect_data)
-but_close = Button(master=but_frame, text='Закрой меня', width = 10, command=root.destroy)
+but_data = Button(master=but_frame, bg ='#009DFF', text='ЖМЯК', width=10, command=collect_data)
+but_close = Button(master=but_frame, bg = '#ED0CC0', text='Закрой меня', width = 10, command=root.destroy)
 
 # Активируем функцию
 open_text()
