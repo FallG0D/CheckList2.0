@@ -11,6 +11,12 @@ def retype_date(string='20/06/2006'):
             break
         else:
             idx += 1
+    day, month, year = bdate
+    result = date(
+        year=int(year),
+        month=int(month),
+        day=int(day)
+    )
 
     return bdate
 
