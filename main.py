@@ -1,38 +1,48 @@
 # pady/x Отступ по Х или У сверху/ сбоку
 # radiobutton- класс позволяющий выбрать только одно значение
-#chekbutton - Класс для создания кнопок-флагов
-#BooleanVar - класс координирующий значения флагов
-#onvalue, offvalue - включение кнопок
-#Frame - позволяет разбить root
-#master - присваивает территорию объекту
-#get - функция вытягивающая значение объектов из tkinter
-#subset - сравнивает объект в столбцах
-#list - редоктируемый список(remove-удаление объекта, если знаем название, clear - чистить весь list)
-#tuple - защита от изменений
+# chekbutton - Класс для создания кнопок-флагов
+# BooleanVar - класс координирующий значения флагов
+# onvalue, offvalue - включение кнопок
+# Frame - позволяет разбить root
+# master - присваивает территорию объекту
+# get - функция вытягивающая значение объектов из tkinter
+# subset - сравнивает объект в столбцах
+# list - редоктируемый список(remove-удаление объекта, если знаем название, clear - чистить весь list)
+# tuple - защита от изменений
+# Datetime - библиотека для работы с датой и временем
+# now - вытягивает дату и время
+# date - вытягивает дату
 
 '''Начало программы'''
 # Импорт модулей
 from tkinter import *
 import pandas as pd
+import datetime
+from datetime import datetime
+from support import retype_date
 root = Tk()
+
 
 def collect_data():
     """Собирает, обрабатывает и сохраняет дату в базу данных"""
     data = {}
 
-    name = ent_name.get()
-    print(name)
+    name = ent_name.get()  # Вытягивает данные в формтае string
     data['ФИО'] = name
 
-    age = ent_bdate.get()
-    print(age)
-    data['Дата рождения'] = age #Записываем в словарь
+    bdate = ent_bdate.get()
+    data['Дата рождения'] = retype_date(bdate)  # Записываем в словарь
+
+    reg_data = datetime.now()
+    data['Дата регистрации'] = reg_data.date()
+
     print(data)
 
-    global df
+    global df  # Позволяет оперироровать df вне функции
     df = df.append(other=data, ignore_index=True)
     df = df.drop_duplicates(subset=columns[:-2], keep='last')
-    
+
+
 # Функция для текста
 def open_text():
     text_frame.pack(side=TOP, anchor=W, pady=10)
@@ -51,6 +61,7 @@ def open_radio():
     male.pack(side=LEFT, anchor=W)
     female.pack(side=LEFT, anchor=W)
 
+
 def create_flag(name):
     """Проектирует флаги"""
     boolean = BooleanVar()
@@ -59,30 +70,28 @@ def create_flag(name):
                        onvalue=1, offvalue=0)
     return flag, boolean
 
+
 def open_flags():
-    interest_frame.pack(side=TOP, anchor=W,pady=10)
+    interest_frame.pack(side=TOP, anchor=W, pady=10)
 
-    interest_lbl.pack(side=TOP,anchor=W)
+    interest_lbl.pack(side=TOP, anchor=W)
 
-
-    i=0
+    i = 0
     while i < len(flags):
         flags[i].pack(side=TOP, anchor=W)
         i += 1
 
+
 def open_buttons():
     but_frame.pack(side=TOP, pady=10)
 
-    but_data.pack(side=RIGHT,padx=10)
+    but_data.pack(side=RIGHT, padx=10)
     but_close.pack(side=RIGHT, padx=10, pady=10)
 
-#Проектируем базу Данных
-columns = 'ФИО','Дата рождения', 'Возраст', 'пол', 'интересы', 'Дата регистрации'
+
+# Проектируем базу Данных
+columns = 'ФИО', 'Дата рождения', 'Возраст', 'пол', 'интересы', 'Дата регистрации'
 df = pd.DataFrame(columns=columns)
-
-
-
-
 
 radio_frame = Frame(master=root)
 
@@ -105,30 +114,29 @@ ent_name = Entry(master=text_frame)
 lbl_bdate = Label(master=text_frame, text="Введите дату рождения:")
 ent_bdate = Entry(master=text_frame)
 
-
-#Окно выборов интересов - флаги
+# Окно выборов интересов - флаги
 interest_frame = Frame(master=root)
 
 interest_lbl = Label(master=interest_frame, text='Выберите интересы:')
-interest_names = "Наука","Техника","Искусство", "Спорт", "Путешествие","Другое"
+interest_names = "Наука", "Техника", "Искусство", "Спорт", "Путешествие", "Другое"
 
-#Создание флагов
+# Создание флагов
 flag_sc, bool_sc = create_flag(name=interest_names[0])
 flag_tech, bool_tech = create_flag(name=interest_names[1])
 flag_art, bool_art = create_flag(name=interest_names[2])
 flag_tr, bool_tr = create_flag(name=interest_names[3])
 flag_sp, bool_sp = create_flag(name=interest_names[4])
 flag_an, bool_an = create_flag(name=interest_names[5])
-#Список флагов и их булево значение
+# Список флагов и их булево значение
 flags = flag_sc, flag_tech, flag_art, flag_tr, flag_sp, flag_an
 booleans_interest = bool_sc, bool_tech, bool_art, bool_tr, bool_sp, bool_an
 
-#Создание кнопок
+# Создание кнопок
 but_frame = Frame(master=root)
 
-#Кнопки действий
-but_data = Button(master=but_frame, bg ='#009DFF', text='ЖМЯК', width=10, command=collect_data)
-but_close = Button(master=but_frame, bg = '#ED0CC0', text='Закрой меня', width = 10, command=root.destroy)
+# Кнопки действий
+but_data = Button(master=but_frame, bg='#009DFF', text='ЖМЯК', width=10, command=collect_data)
+but_close = Button(master=but_frame, bg='#ED0CC0', text='Закрой меня', width=10, command=root.destroy)
 
 # Активируем функцию
 open_text()
