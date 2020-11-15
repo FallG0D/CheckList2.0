@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import date
 
-def retype_date(string='20/06/2006'):
+def retype_date(string):
     seps = '/', '.', '-', ' '
     bdate = None
 
@@ -18,6 +18,4 @@ def retype_date(string='20/06/2006'):
         day=int(day)
     )
 
-    return bdate
-
-retype_date()
+    return result
