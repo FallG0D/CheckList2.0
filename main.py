@@ -37,12 +37,36 @@ def collect_data():
     data['Дата регистрации'] = reg_data.date()
 
     print(data)
+    print(data['Дата регистрации'])
+    print(data ['Дата рождения'])
+
+    days_time = data['Дата регистрации'] - data ['Дата рождения']
+    age = days_time / 365.25
+    data['Возраст'] = age.days
+
+    answer_gender = var.get()
+    if answer_gender == 0:
+        data['пол'] = 'Мужской'
+    elif answer_gender ==1:
+        data['пол'] = 'Женский'
+
 
     global df  # Позволяет оперироровать df вне функции
     df = df.append(other=data, ignore_index=True)
-    df = df.drop_duplicates(subset=columns[:-2], keep='last')
+    #df = df.drop_duplicates(subset=columns[:-2], keep=('last'))
 
 
+def get_interest():
+
+    interest_list = []
+    idx=0
+    while idx < len(booleans_interest):
+        bool_inter = booleans_interest[idx]
+        if bool_inter.get():
+            answer = interest_names[idx]
+            interest_list.append(answer)
+    idx += 1
+    return interest_list
 # Функция для текста
 def open_text():
     text_frame.pack(side=TOP, anchor=W, pady=10)
@@ -93,6 +117,7 @@ def open_buttons():
 columns = 'ФИО', 'Дата рождения', 'Возраст', 'пол', 'интересы', 'Дата регистрации'
 df = pd.DataFrame(columns=columns)
 
+"""Радиокнопки - выбор пола"""
 radio_frame = Frame(master=root)
 
 lbl_sex = Label(master=radio_frame, text="Выберите пол:")
