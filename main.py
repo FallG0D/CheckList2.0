@@ -12,6 +12,8 @@
 # Datetime - библиотека для работы с датой и временем
 # now - вытягивает дату и время
 # date - вытягивает дату
+# join - может конкетинировать строковые объекты из списка через сепаратор
+# delete() - Очищает текстовые строки от и до указанного индекса в строке tkinter'a
 
 '''Начало программы'''
 # Импорт модулей
@@ -21,7 +23,6 @@ import datetime
 from datetime import datetime
 from support import retype_date
 root = Tk()
-
 
 def collect_data():
     """Собирает, обрабатывает и сохраняет дату в базу данных"""
@@ -36,9 +37,9 @@ def collect_data():
     reg_data = datetime.now()
     data['Дата регистрации'] = reg_data.date()
 
-    print(data)
-    print(data['Дата регистрации'])
-    print(data ['Дата рождения'])
+    # print(data)
+    # print(data['Дата регистрации'])
+    # print(data ['Дата рождения'])
 
     days_time = data['Дата регистрации'] - data ['Дата рождения']
     age = days_time / 365.25
@@ -49,12 +50,21 @@ def collect_data():
         data['пол'] = 'Мужской'
     elif answer_gender ==1:
         data['пол'] = 'Женский'
+    print(get_interest())
 
+    interest = get_interest()
+    data['интересы'] = ', '.join(interest)
 
+    ent_name.delete(0, END)
+
+    def del_data():
+        ent_name.delete(0, END)
+        ent_bdate.delete(0, END)
     global df  # Позволяет оперироровать df вне функции
     df = df.append(other=data, ignore_index=True)
-    #df = df.drop_duplicates(subset=columns[:-2], keep=('last'))
+    df = df.drop_duplicates(subset=columns[:-2], keep='last')
 
+    del_data()
 
 def get_interest():
 
@@ -65,8 +75,12 @@ def get_interest():
         if bool_inter.get():
             answer = interest_names[idx]
             interest_list.append(answer)
-    idx += 1
+        idx += 1
     return interest_list
+    # print(get_interest)
+
+
+
 # Функция для текста
 def open_text():
     text_frame.pack(side=TOP, anchor=W, pady=10)
@@ -111,6 +125,7 @@ def open_buttons():
 
     but_data.pack(side=RIGHT, padx=10)
     but_close.pack(side=RIGHT, padx=10, pady=10)
+
 
 
 # Проектируем базу Данных
@@ -160,13 +175,14 @@ booleans_interest = bool_sc, bool_tech, bool_art, bool_tr, bool_sp, bool_an
 but_frame = Frame(master=root)
 
 # Кнопки действий
-but_data = Button(master=but_frame, bg='#009DFF', text='ЖМЯК', width=10, command=collect_data)
-but_close = Button(master=but_frame, bg='#ED0CC0', text='Закрой меня', width=10, command=root.destroy)
+but_data = Button(master=but_frame, bg='#74F268', text='ЖМЯК', width=10, command=collect_data)
+but_close = Button(master=but_frame, bg='#D94E4E', text='Закрой меня', width=10, command=root.destroy)
 
 # Активируем функцию
 open_text()
 open_radio()
 open_flags()
 open_buttons()
+get_interest()
 # Функции развертывания
 root.mainloop()
